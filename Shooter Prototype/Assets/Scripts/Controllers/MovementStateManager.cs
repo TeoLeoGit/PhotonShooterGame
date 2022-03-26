@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+//using Photon.Pun;
 
 public class MovementStateManager : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
+    [SerializeField] float jumpHeight;
     Vector3 moveDir;
     float hzInput, verInput;
     [SerializeField] CharacterController characterController;
+    //public PhotonView view;
 
     //checking grounded
     [SerializeField] LayerMask groundMask;
@@ -19,18 +20,34 @@ public class MovementStateManager : MonoBehaviour
 
     //animation transitions
     Animator animator;
+
+    MovementBaseState currentState;
+    public IdleState idle = new IdleState();
+    public CrouchState crouch = new CrouchState();
+    public RunState run = new RunState();
+
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        SwitchState(idle);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetInputsAndMove();
+        //if (view.IsMine)
+            GetInputsAndMove();
         GravityEffect();
+        currentState.UpdateState(this);
+    }
+
+    public void SwitchState(MovementBaseState state)
+    {
+        currentState = state;
+        currentState.EnterState(this);
     }
 
     void GetInputsAndMove()
@@ -39,12 +56,16 @@ public class MovementStateManager : MonoBehaviour
         verInput = Input.GetAxis("Vertical");
         
         moveDir = transform.forward * verInput + transform.right * hzInput;
-        characterController.Move(moveDir * moveSpeed * Time.deltaTime);
+        characterController.Move(moveDir.normalized * moveSpeed * Time.deltaTime);
 
         animator.SetFloat("hInput", hzInput);
         animator.SetFloat("vInput", verInput);
-        if (hzInput == 0 && verInput == 0) animator.SetBool("Running", false);
-        else animator.SetBool("Running", true);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+
     }
 
     bool IsGrounded()
@@ -57,15 +78,34 @@ public class MovementStateManager : MonoBehaviour
 
     void GravityEffect()
     {
-        if (IsGrounded()) velocity.y += gravity * Time.deltaTime;
-        else if (velocity.y < 0) velocity.y = -2;
-
+        if (!IsGrounded()) velocity.y += gravity * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
+    }
+
+    void Jump()
+    {
+        if (IsGrounded())
+        {
+            velocity.y = jumpHeight;
+            animator.SetTrigger("Jump");
+        }
+            
+            
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(footPos, characterController.radius - 0.05f);
+    }
+
+    public Vector3 GetMoveDir()
+    {
+        return moveDir;
+    }
+
+    public Animator GetAnimator()
+    {
+        return animator;
     }
 }
