@@ -32,7 +32,7 @@ public class WeaponManager : MonoBehaviour
     bool CanFire()
     {
         fireRateTimer += Time.deltaTime;
-        Debug.Log("fire rate timer: " + fireRateTimer);
+        //Debug.Log("fire rate timer: " + fireRateTimer);
         if (fireRateTimer < fireRate) return false;
 
         if (Input.GetButtonDown("Fire1")) return true;
