@@ -2,11 +2,12 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_InputField createInput;
-    [SerializeField] TMP_InputField joimInput;
+    [SerializeField] TMP_InputField joinInput;
 
     [SerializeField] byte maxPlayers;
     // Start is called before the first frame update
@@ -19,7 +20,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(joimInput.text);
+        PhotonNetwork.JoinRoom(joinInput.text);
     }
 
     public override void OnJoinedRoom()

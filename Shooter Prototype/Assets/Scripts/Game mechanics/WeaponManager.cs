@@ -14,13 +14,14 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] Transform barrelPos;
     [SerializeField] float bulletVelocity;
     [SerializeField] Transform target;
-    // Start is called before the first frame update
+    [SerializeField] int damage = 10;
+    
+    
     void Start()
     {
         fireRateTimer = fireRate;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (CanFire())
@@ -32,10 +33,7 @@ public class WeaponManager : MonoBehaviour
     bool CanFire()
     {
         fireRateTimer += Time.deltaTime;
-        //Debug.Log("fire rate timer: " + fireRateTimer);
         if (fireRateTimer < fireRate) return false;
-
-        if (Input.GetButtonDown("Fire1")) return true;
         if (Input.GetButtonDown("Fire1")) return true;
         return false;
     }
@@ -43,8 +41,17 @@ public class WeaponManager : MonoBehaviour
     void Fire()
     {
         fireRateTimer = 0;
-        GameObject fireBullet = Instantiate(bullet, barrelPos.position, barrelPos.rotation);
-        Rigidbody rb = fireBullet.GetComponent<Rigidbody>();
-        rb.AddForce(barrelPos.forward * bulletVelocity, ForceMode.Impulse);
+        Ray ray = new Ray(barrelPos.position, barrelPos.forward);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, 100))
+        {
+            var health = hitInfo.collider.GetComponent<HealthSystem>();
+
+            if (health != null)
+                health.TakeDamage(damage);
+        }
     }
+
+    
 }

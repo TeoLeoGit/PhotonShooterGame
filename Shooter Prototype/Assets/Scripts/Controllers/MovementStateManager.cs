@@ -1,5 +1,5 @@
 using UnityEngine;
-//using Photon.Pun;
+using Photon.Pun;
 
 public class MovementStateManager : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class MovementStateManager : MonoBehaviour
     Vector3 moveDir;
     float hzInput, verInput;
     [SerializeField] CharacterController characterController;
-    //public PhotonView view;
+    public PhotonView view;
 
     //checking grounded
     [SerializeField] LayerMask groundMask;
@@ -32,13 +32,14 @@ public class MovementStateManager : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         SwitchState(idle);
+        view = GetComponent<PhotonView>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if (view.IsMine)
+        if (view.IsMine)
             GetInputsAndMove();
         GravityEffect();
         currentState.UpdateState(this);

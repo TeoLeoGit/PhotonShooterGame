@@ -16,9 +16,5 @@ public class PlayerFollow : MonoBehaviour
         vcam.LookAt = cameraPos;
         vcam.Follow = cameraPos;
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+ 
 }

@@ -1044,7 +1044,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   createInput: {fileID: 1240988246}
-  joimInput: {fileID: 1505453100}
+  joinInput: {fileID: 1505453100}
   maxPlayers: 10
 --- !u!4 &1208576340
 Transform:

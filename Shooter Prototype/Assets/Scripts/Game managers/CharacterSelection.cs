@@ -1,12 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class CharacterSelection : MonoBehaviour
+public class CharacterSelection : MonoBehaviourPunCallbacks
 {
     public GameObject[] characters;
     public int selectedCharacterIndex = 0;
+    public GameObject spawner;
+    public GameObject selector;
+    public GameObject startCamera;
     // Start is called before the first frame update
     public void NextCharacter()
     {
@@ -30,6 +33,8 @@ public class CharacterSelection : MonoBehaviour
     public void StartGame()
     {
         PlayerPrefs.SetInt("selectedCharacterIndex", selectedCharacterIndex);
-        SceneManager.LoadScene("BasicMap");
+        spawner.SetActive(true);
+        selector.SetActive(false);
+        startCamera.SetActive(false);
     }
 }
